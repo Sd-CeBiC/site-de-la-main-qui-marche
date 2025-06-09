@@ -13,15 +13,29 @@
       margin-top: 50px;
       transition: background-color 0.5s ease;
     }
+    
     #counter {
       font-size: 24px;
       margin-top: 20px;
     }
+    
     #gif {
       margin-top: 20px;
       max-width: 100%;
       height: auto;
     }
+    
+    /* Affichage de la distance parcourue */
+    #distance {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    
     /* Animation multicolore pour le succès */
     @keyframes multicolor {
       0%   { background-color: #FF0000; }
@@ -31,20 +45,27 @@
       80%  { background-color: #0000FF; }
       100% { background-color: #FF00FF; }
     }
+    
     .multicolor {
       animation: multicolor 1s infinite;
     }
   </style>
 </head>
 <body>
+  <!-- Distance parcourue -->
+  <div id="distance"></div>
+  
+  <!-- Compteur de pas -->
   <div id="counter"></div>
+  
+  <!-- GIF animé -->
   <img id="gif" src="https://i.pinimg.com/originals/21/81/c8/2181c87b0622b9960a9fbb023085782c.gif" alt="GIF animé">
   
   <script>
     // Date de départ : 6 juin 2025 à 11h30:00.000
     const dateDepart = new Date(2025, 5, 6, 11, 30, 0, 0);
     const dureePasMs = 740; // Durée d'un pas en millisecondes
-    const stepGoal = 801500000;
+    const stepGoal = 801500000; // Objectif de pas pour le tour du monde
     
     function updateCounter() {
       const maintenant = new Date();
@@ -52,25 +73,32 @@
       
       // Si la date actuelle est antérieure à la date de départ
       if (diffMs < 0) {
-        document.getElementById('counter').innerText =
-          "Le compteur débutera bientôt.";
+        document.getElementById('counter').innerText = "Le compteur débutera bientôt.";
+        document.getElementById('distance').innerText = "Distance parcourue: 0 m";
         return;
       }
       
       let nombreDePas = Math.floor(diffMs / dureePasMs);
       
+      // Calcul de la distance parcourue en mètres (1 pas = 5 cm)
+      const distanceMetres = (nombreDePas * 5) / 100;
+      
       // Vérifier si l'objectif est atteint ou dépassé
       if (nombreDePas >= stepGoal) {
-        document.getElementById('counter').innerText =
-          "Félicitations ! Le tour du monde est accompli.";
-        // Déclencher une animation multicolore sur le body
-        document.body.classList.add("multicolor");
+        document.getElementById('counter').innerText = "Félicitations ! Le tour du monde est accompli.";
+        document.getElementById('distance').innerText = `Distance totale : ${(stepGoal * 5 / 100).toFixed(2)} m`;
+        document.body.classList.add("multicolor"); // Déclencher animation multicolore
         return; // Fin des mises à jour
       }
       
       const remainingSteps = stepGoal - nombreDePas;
+      
+      // Mettre à jour l'affichage des pas et de la distance
       document.getElementById('counter').innerText = 
         `${nombreDePas} pas effectués, ${remainingSteps} pas restants pour faire le tour du monde`;
+      
+      document.getElementById('distance').innerText = 
+        `Distance parcourue: ${distanceMetres.toFixed(2)} m`;
     }
     
     // Rafraîchir le compteur toutes les 740 millisecondes
